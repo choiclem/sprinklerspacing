@@ -2,46 +2,61 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>OH (Ordinary Hazard) SPRINKLER SPACING</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OH Sprinkler Spacing</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 40px;
+      margin: 0;
+      padding: 20px;
       background: #f0f0f0;
     }
 
     .container {
+      width: 100%;
       max-width: 500px;
       margin: auto;
       background: white;
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+      box-sizing: border-box;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
     }
 
     input {
-      width: 99%;
+      width: 100%;
       padding: 10px;
-      margin: 10px 0;
+      margin-top: 5px;
       font-size: 16px;
+      box-sizing: border-box;
     }
 
     .result {
-      font-size: 18px;
-      margin-bottom: 10px;
+      font-size: 16px;
+      margin-top: 10px;
       color: #333;
     }
 
     .warning {
       color: red;
       font-size: 14px;
-      margin-top: -5px;
-      margin-bottom: 10px;
+      margin-top: 5px;
     }
 
     .visualization {
       margin-top: 30px;
       text-align: center;
+      overflow-x: auto;
     }
 
     #box {
@@ -50,6 +65,8 @@
       background-color: rgba(0, 123, 255, 0.1);
       position: relative;
       transition: all 0.3s ease;
+      min-width: 100px;
+      min-height: 100px;
     }
 
     #box span {
@@ -58,8 +75,9 @@
       font-weight: bold;
       background: white;
       padding: 2px 5px;
-      font-size: 14px;
+      font-size: 13px;
       z-index: 1;
+      white-space: nowrap;
     }
 
     #labelX {
@@ -77,7 +95,7 @@
     .corner-label {
       position: absolute;
       font-weight: bold;
-      font-size: 14px;
+      font-size: 13px;
       color: red;
       background-color: #fff;
       border: 1px solid red;
@@ -86,45 +104,59 @@
       z-index: 1;
     }
 
-    .corner-label.top-left {
-      top: -10px;
-      left: -10px;
-    }
+    .corner-label.top-left { top: -10px; left: -10px; }
+    .corner-label.top-right { top: -10px; right: -10px; }
+    .corner-label.bottom-right { bottom: -10px; right: -10px; }
 
-    .corner-label.top-right {
-      top: -10px;
-      right: -10px;
-    }
+    @media (max-width: 480px) {
+      h2 {
+        font-size: 1rem;
+      }
 
-    .corner-label.bottom-right {
-      bottom: -10px;
-      right: -10px;
+      input {
+        font-size: 14px;
+      }
+
+      #labelY {
+        right: -70px;
+        font-size: 12px;
+      }
+
+      #labelX {
+        font-size: 12px;
+      }
+
+      .corner-label {
+        font-size: 12px;
+        padding: 1px 4px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container" role="main">
-    <h2>OH (Ordinary Hazard) SPRINKLER SPACING (for NZS4541:2020 only)</h2>
-    <p><strong>OH coverage Area:</strong> 12 m²</p>
+    <h2>OH (Ordinary Hazard) SPRINKLER SPACING</h2>
+    <p><strong>OH Coverage Area:</strong> 12 m²</p>
 
-    <label for="xInput">Enter Distance between two(A to B) sprinklers (only 1.8m – 4.6m):</label>
-    <input type="number" id="xInput" aria-label="X input in meters" placeholder="Enter value in meter" step="any" min="1.8" max="4.8">
+    <label for="xInput">Distance between Sprinklers A-B (1.8m–4.6m):</label>
+    <input type="number" id="xInput" aria-label="X input in meters" placeholder="Enter distance in meters" step="any" min="1.8" max="4.8">
 
-    <label for="wallInput">Max sprinkler distance allowed from the wall :</label>
+    <label for="wallInput">Max Distance from Wall:</label>
     <input type="number" id="wallInput" aria-label="Sprinkler from wall" readonly>
 
-    <div class="result" id="yResult" aria-live="polite">Max space allowed on the other Spk = ?</div>
+    <div class="result" id="yResult" aria-live="polite">Max space allowed on other Spk = ?</div>
     <div class="result" id="areaResult" aria-live="polite">Coverage = 12.00 m²</div>
     <div class="warning" id="warningMsg" aria-live="assertive"></div>
 
     <div class="visualization" aria-label="Box visualization of X by Y">
       <div id="box" style="width:100px;height:100px;">
-        <span id="labelX"></span>
-        <span id="labelY"></span>
+        <span id="labelX">Spk to Spk</span>
+        <span id="labelY">Spk to Spk</span>
         <div class="corner-label top-left">A</div>
         <div class="corner-label top-right">B</div>
         <div class="corner-label bottom-right">C</div>
       </div>
+      <p style="font-size: 12px; color: #777; margin-top: 8px;">(1m = 50px)</p>
     </div>
   </div>
 
@@ -141,7 +173,7 @@
     const area = 12;
     const maxVal = 4.6;
     const wallLimit = 2.3;
-    const scale = 50; // 1m = 50px
+    const scale = 50;
     const maxSizePx = 300;
 
     xInput.addEventListener("input", () => {
@@ -183,15 +215,15 @@
         box.style.width = `${width}px`;
         box.style.height = `${height}px`;
 
-        labelX.textContent = `Spk A to Spk B ${userX.toFixed(2)}m`;
-        labelY.textContent = `Max Spk B to Spk C allowed ${y.toFixed(2)}m`;
+        labelX.textContent = `Spk A to B: ${userX.toFixed(2)}m`;
+        labelY.textContent = `Max B to C: ${y.toFixed(2)}m`;
 
         labelX.style.display = width < 50 ? "none" : "block";
         labelY.style.display = height < 50 ? "none" : "block";
       } else {
         wallInput.value = "";
-        yResult.textContent = "Enter Distance between two sprinklers within 1.8m - 4.6m";
-        areaResult.textContent = "Area = 12.00 m²";
+        yResult.textContent = "Enter a distance between 1.8 and 4.6 meters";
+        areaResult.textContent = "Coverage = 12.00 m²";
         warningMsg.textContent = userX <= 0 ? "Please enter a value greater than 0." : "";
         resetBox();
       }
@@ -208,4 +240,3 @@
   </script>
 </body>
 </html>
-
