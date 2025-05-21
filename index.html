@@ -1,210 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>OH (Ordinary Hazard) SPRINKLER SPACING</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sprinkler Clearance Calculator</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: Arial, sans-serif;
-      padding: 40px;
-      background: #f0f0f0;
-    }
-
-    .container {
-      max-width: 500px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
-    }
-
-    input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      font-size: 16px;
-    }
-
-    .result {
-      font-size: 18px;
-      margin-bottom: 10px;
+      padding: 1rem;
+      margin: 0;
+      background-color: #f9f9f9;
       color: #333;
     }
 
-    .warning {
-      color: red;
-      font-size: 14px;
-      margin-top: -5px;
-      margin-bottom: 10px;
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
-    .visualization {
-      margin-top: 30px;
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
       text-align: center;
     }
 
-    #box {
-      display: inline-block;
-      border: 2px solid #007bff;
-      background-color: rgba(0, 123, 255, 0.1);
-      position: relative;
-      transition: all 0.3s ease;
-    }
-
-    #box span {
-      position: absolute;
-      color: #007bff;
+    label {
       font-weight: bold;
-      background: white;
-      padding: 2px 5px;
-      font-size: 14px;
-      z-index: 1;
+      display: block;
+      margin-top: 1rem;
     }
 
-    #labelX {
-      top: -25px;
-      left: 50%;
-      transform: translateX(-50%);
+    input, select {
+      padding: 0.6rem;
+      width: 100%;
+      margin-top: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
     }
 
-    #labelY {
-      top: 50%;
-      right: -90px;
-      transform: translateY(-50%);
-    }
-
-    .corner-label {
-      position: absolute;
+    .result {
       font-weight: bold;
-      font-size: 14px;
+      margin-top: 1.5rem;
+      font-size: 1.1rem;
+      text-align: center;
+    }
+
+    .valid {
+      color: green;
+    }
+
+    .invalid {
       color: red;
-      background-color: #fff;
-      border: 1px solid red;
-      border-radius: 4px;
-      padding: 2px 6px;
-      z-index: 1;
     }
 
-    .corner-label.top-left {
-      top: -10px;
-      left: -10px;
+    img {
+      width: 100%;
+      height: auto;
+      margin-top: 1.5rem;
+      border-radius: 8px;
     }
 
-    .corner-label.top-right {
-      top: -10px;
-      right: -10px;
+    small {
+      display: block;
+      margin-top: 0.5rem;
+      color: #666;
+      font-size: 0.9rem;
+      text-align: center;
     }
 
-    .corner-label.bottom-right {
-      bottom: -10px;
-      right: -10px;
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.25rem;
+      }
+
+      input, select {
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container" role="main">
-    <h2>OH (Ordinary Hazard) SPRINKLER SPACING (for NZS4541:2020 only)</h2>
-    <p><strong>OH coverage Area:</strong> 12 m²</p>
+  <div class="container">
+    <h1>Sprinkler Clearance Calculator</h1>
 
-    <label for="xInput">Enter Distance between two(A to B) sprinklers (only 1.8m – 4.6m):</label>
-    <input type="number" id="xInput" aria-label="X input in meters" placeholder="Enter value in meter" step="any" min="1.8" max="4.8">
+    <img src="1.png" alt="Sprinkler Clearance Table" />
 
-    <label for="wallInput">Max sprinkler distance allowed from the wall :</label>
-    <input type="number" id="wallInput" aria-label="Sprinkler from wall" readonly>
+    <label for="verticalInput">Enter Vertical Distance Above Obstruction (mm):</label>
+    <input type="number" id="verticalInput" placeholder="e.g., 220" step="any" />
 
-    <div class="result" id="yResult" aria-live="polite">Max space allowed on the other Spk = ?</div>
-    <div class="result" id="areaResult" aria-live="polite">Coverage = 12.00 m²</div>
-    <div class="warning" id="warningMsg" aria-live="assertive"></div>
+    <small>Horizontal clearance is interpolated linearly within each range.</small>
 
-    <div class="visualization" aria-label="Box visualization of X by Y">
-      <div id="box" style="width:100px;height:100px;">
-        <span id="labelX"></span>
-        <span id="labelY"></span>
-        <div class="corner-label top-left">A</div>
-        <div class="corner-label top-right">B</div>
-        <div class="corner-label bottom-right">C</div>
-      </div>
-    </div>
+    <div class="result" id="result"></div>
+
+    <img src="2.png" alt="Sprinkler Distances from Obstructions Diagram" />
   </div>
 
   <script>
-    const xInput = document.getElementById("xInput");
-    const wallInput = document.getElementById("wallInput");
-    const yResult = document.getElementById("yResult");
-    const areaResult = document.getElementById("areaResult");
-    const warningMsg = document.getElementById("warningMsg");
-    const box = document.getElementById("box");
-    const labelX = document.getElementById("labelX");
-    const labelY = document.getElementById("labelY");
+    const table = [
+      { min: 0, max: 49, horizontalMin: 0, horizontalMax: 299 },
+      { min: 50, max: 69, horizontalMin: 300, horizontalMax: 399 },
+      { min: 70, max: 99, horizontalMin: 400, horizontalMax: 499 },
+      { min: 100, max: 124, horizontalMin: 500, horizontalMax: 599 },
+      { min: 125, max: 149, horizontalMin: 600, horizontalMax: 699 },
+      { min: 150, max: 199, horizontalMin: 700, horizontalMax: 799 },
+      { min: 200, max: 249, horizontalMin: 800, horizontalMax: 899 },
+      { min: 250, max: 299, horizontalMin: 900, horizontalMax: 999 },
+      { min: 300, max: 364, horizontalMin: 1000, horizontalMax: 1099 },
+      { min: 365, max: 424, horizontalMin: 1100, horizontalMax: 1199 },
+      { min: 425, max: 499, horizontalMin: 1200, horizontalMax: 1299 },
+      { min: 500, max: 564, horizontalMin: 1300, horizontalMax: 1399 },
+      { min: 565, max: 649, horizontalMin: 1400, horizontalMax: 1499 },
+      { min: 650, max: 724, horizontalMin: 1500, horizontalMax: 1599 },
+      { min: 725, max: 819, horizontalMin: 1600, horizontalMax: 1699 },
+      { min: 820, max: 899, horizontalMin: 1700, horizontalMax: 1799 },
+      { min: 900, max: Infinity, horizontalMin: 1800, horizontalMax: 1800 }
+    ];
 
-    const area = 12;
-    const maxVal = 4.6;
-    const wallLimit = 2.3;
-    const scale = 50; // 1m = 50px
-    const maxSizePx = 300;
+    document.getElementById("verticalInput").addEventListener("input", function () {
+      const input = parseFloat(this.value);
+      const result = document.getElementById("result");
 
-    xInput.addEventListener("input", () => {
-      let userX = parseFloat(xInput.value);
-
-      if (!isNaN(userX) && userX >= 1.8 && userX <= maxVal) {
-        let x = (userX >= 1.8 && userX <= 2.6) ? 2.61 : userX;
-        let y = area / x;
-        let halfY = y / 2;
-
-        wallInput.value = halfY.toFixed(2);
-
-        if (halfY > wallLimit) {
-          warningMsg.textContent = "⚠️ Y / 2 exceeds wall limit of 2.3 meters!";
-          yResult.textContent = `Y = --`;
-          areaResult.textContent = `Area = --`;
-          resetBox();
-          return;
-        }
-
-        if (y > maxVal) {
-          warningMsg.textContent = "⚠️ Y would exceed 4.6 meters! Choose a larger X.";
-          yResult.textContent = `Y = --`;
-          areaResult.textContent = `Area = --`;
-          resetBox();
-          return;
-        } else {
-          warningMsg.textContent = "";
-        }
-
-        yResult.textContent = `Max space allowed on the other Spk = ${y.toFixed(2)} meters`;
-        areaResult.textContent = `Max Coverage = ${x.toFixed(2)} × ${y.toFixed(2)} = 12.00 m²`;
-
-        let width = x * scale;
-        let height = y * scale;
-        width = Math.min(width, maxSizePx);
-        height = Math.min(height, maxSizePx);
-
-        box.style.width = `${width}px`;
-        box.style.height = `${height}px`;
-
-        labelX.textContent = `Spk A to Spk B ${userX.toFixed(2)}m`;
-        labelY.textContent = `Max Spk B to Spk C allowed ${y.toFixed(2)}m`;
-
-        labelX.style.display = width < 50 ? "none" : "block";
-        labelY.style.display = height < 50 ? "none" : "block";
-      } else {
-        wallInput.value = "";
-        yResult.textContent = "Enter Distance between two sprinklers within 1.8m - 4.6m";
-        areaResult.textContent = "Area = 12.00 m²";
-        warningMsg.textContent = userX <= 0 ? "Please enter a value greater than 0." : "";
-        resetBox();
+      if (isNaN(input) || input < 0) {
+        result.textContent = "❌ Please enter a valid non-negative number.";
+        result.className = "result invalid";
+        return;
       }
-    });
 
-    function resetBox() {
-      box.style.width = "100px";
-      box.style.height = "100px";
-      labelX.textContent = "Spk to Spk";
-      labelY.textContent = "Spk to Spk";
-      labelX.style.display = "block";
-      labelY.style.display = "block";
-    }
+      const range = table.find(row => input >= row.min && input <= row.max);
+
+      if (!range) {
+        result.textContent = "❌ No matching requirement found.";
+        result.className = "result invalid";
+        return;
+      }
+
+      // Linear interpolation within the range
+      const ratio = (input - range.min) / (range.max - range.min);
+      const interpolatedHorizontal = Math.round(
+        range.horizontalMin + ratio * (range.horizontalMax - range.horizontalMin)
+      );
+
+      result.textContent = `✅ Minimum horizontal distance required: ${interpolatedHorizontal} mm`;
+      result.className = "result valid";
+    });
   </script>
 </body>
 </html>
+
