@@ -59,6 +59,7 @@
       background: white;
       padding: 2px 5px;
       font-size: 14px;
+      z-index: 1;
     }
 
     #labelX {
@@ -69,36 +70,35 @@
 
     #labelY {
       top: 50%;
-      right: -60px;
+      right: -90px;
       transform: translateY(-50%);
     }
 
-    .dot {
-      width: 8px;
-      height: 8px;
-      background-color: red;
-      border-radius: 50%;
+    .corner-label {
       position: absolute;
+      font-weight: bold;
+      font-size: 14px;
+      color: red;
+      background-color: #fff;
+      border: 1px solid red;
+      border-radius: 4px;
+      padding: 2px 6px;
+      z-index: 1;
     }
 
-    .top-left {
-      top: -4px;
-      left: -4px;
+    .corner-label.top-left {
+      top: -10px;
+      left: -10px;
     }
 
-    .top-right {
-      top: -4px;
-      right: -4px;
+    .corner-label.top-right {
+      top: -10px;
+      right: -10px;
     }
 
-    .bottom-left {
-      bottom: -4px;
-      left: -4px;
-    }
-
-    .bottom-right {
-      bottom: -4px;
-      right: -4px;
+    .corner-label.bottom-right {
+      bottom: -10px;
+      right: -10px;
     }
   </style>
 </head>
@@ -107,24 +107,23 @@
     <h2>OH (Ordinary Hazard) SPRINKLER SPACING (for NZS4541:2020 only)</h2>
     <p><strong>OH coverage Area:</strong> 12 m²</p>
 
-    <label for="xInput">Enter Distance between two sprinklers (meters, 1.8m – 4.6m):</label>
+    <label for="xInput">Enter Distance between two(A to B) sprinklers (only 1.8m – 4.6m):</label>
     <input type="number" id="xInput" aria-label="X input in meters" placeholder="Enter value in meter" step="any" min="1.8" max="4.8">
 
     <label for="wallInput">Max sprinkler distance allowed from the wall :</label>
     <input type="number" id="wallInput" aria-label="Sprinkler from wall" readonly>
 
-    <div class="result" id="yResult" aria-live="polite">Max space allowed on the other Spk  = ?</div>
+    <div class="result" id="yResult" aria-live="polite">Max space allowed on the other Spk = ?</div>
     <div class="result" id="areaResult" aria-live="polite">Coverage = 12.00 m²</div>
     <div class="warning" id="warningMsg" aria-live="assertive"></div>
 
     <div class="visualization" aria-label="Box visualization of X by Y">
       <div id="box" style="width:100px;height:100px;">
-        <span id="labelX">X</span>
-        <span id="labelY">Y</span>
-        <div class="dot top-left"></div>
-        <div class="dot top-right"></div>
-        <div class="dot bottom-left"></div>
-        <div class="dot bottom-right"></div>
+        <span id="labelX"></span>
+        <span id="labelY"></span>
+        <div class="corner-label top-left">A</div>
+        <div class="corner-label top-right">B</div>
+        <div class="corner-label bottom-right">C</div>
       </div>
     </div>
   </div>
@@ -146,11 +145,10 @@
     const maxSizePx = 300;
 
     xInput.addEventListener("input", () => {
-      let userX = parseFloat(xInput.value); // user value shown on label
+      let userX = parseFloat(xInput.value);
 
       if (!isNaN(userX) && userX >= 1.8 && userX <= maxVal) {
-        let x = (userX >= 1.8 && userX <= 2.6) ? 2.61 : userX; // calculation value
-
+        let x = (userX >= 1.8 && userX <= 2.6) ? 2.61 : userX;
         let y = area / x;
         let halfY = y / 2;
 
@@ -185,8 +183,8 @@
         box.style.width = `${width}px`;
         box.style.height = `${height}px`;
 
-        labelX.textContent = `Spk to Spk ${userX.toFixed(2)}m`; // show real input
-        labelY.textContent = `Max Spk to Spk allowed ${y.toFixed(2)}m`;
+        labelX.textContent = `A to B ${userX.toFixed(2)}m`;
+        labelY.textContent = `Max B to C allowed ${y.toFixed(2)}m`;
 
         labelX.style.display = width < 50 ? "none" : "block";
         labelY.style.display = height < 50 ? "none" : "block";
@@ -210,4 +208,3 @@
   </script>
 </body>
 </html>
-
