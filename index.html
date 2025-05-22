@@ -156,35 +156,35 @@
 
         if (halfY > wallLimit) {
           warningMsg.textContent = "⚠️ Y / 2 exceeds wall limit of 2.3 meters!";
-          yResult.textContent = Y = --;
-          areaResult.textContent = Area = --;
+          yResult.textContent = `Y = --`;
+          areaResult.textContent = `Area = --`;
           resetBox();
           return;
         }
 
         if (y > maxVal) {
           warningMsg.textContent = "⚠️ Y would exceed 4.6 meters! Choose a larger X.";
-          yResult.textContent = Y = --;
-          areaResult.textContent = Area = --;
+          yResult.textContent = `Y = --`;
+          areaResult.textContent = `Area = --`;
           resetBox();
           return;
         } else {
           warningMsg.textContent = "";
         }
 
-        yResult.textContent = Max space allowed on the other Spk = ${y.toFixed(2)} meters;
-        areaResult.textContent = Max Coverage = ${x.toFixed(2)} × ${y.toFixed(2)} = 12.00 m²;
+        yResult.textContent = `Max space allowed on the other Spk = ${y.toFixed(2)} meters`;
+        areaResult.textContent = `Max Coverage = ${x.toFixed(2)} × ${y.toFixed(2)} = 12.00 m²`;
 
         let width = x * scale;
         let height = y * scale;
         width = Math.min(width, maxSizePx);
         height = Math.min(height, maxSizePx);
 
-        box.style.width = ${width}px;
-        box.style.height = ${height}px;
+        box.style.width = `${width}px`;
+        box.style.height = `${height}px`;
 
-        labelX.textContent = Spk A to Spk B ${userX.toFixed(2)}m;
-        labelY.textContent = Max Spk B to Spk C allowed ${y.toFixed(2)}m;
+        labelX.textContent = `A to B ${userX.toFixed(2)}m`;
+        labelY.textContent = `Max B to C allowed ${y.toFixed(2)}m`;
 
         labelX.style.display = width < 50 ? "none" : "block";
         labelY.style.display = height < 50 ? "none" : "block";
