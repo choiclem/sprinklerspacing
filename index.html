@@ -1,31 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>OH (Ordinary Hazard) SPRINKLER SPACING</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 20px;
-      margin: 0;
+      padding: 40px;
       background: #f0f0f0;
     }
 
-    h2 {
-      font-size: 20px;
-      margin-bottom: 10px;
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
     }
 
     input {
-      width: 100%;
+      width: 99%;
       padding: 10px;
       margin: 10px 0;
       font-size: 16px;
     }
 
     .result {
-      font-size: 16px;
+      font-size: 18px;
       margin-bottom: 10px;
       color: #333;
     }
@@ -46,86 +48,84 @@
       display: inline-block;
       border: 2px solid #007bff;
       background-color: rgba(0, 123, 255, 0.1);
+      position: relative;
       transition: all 0.3s ease;
-      margin: 10px 0;
-      touch-action: manipulation;
     }
 
-    .corner-labels {
-      display: flex;
-      justify-content: space-between;
-      max-width: 300px;
-      margin: 0 auto;
+    #box span {
+      position: absolute;
+      color: #007bff;
+      font-weight: bold;
+      background: white;
+      padding: 2px 5px;
+      font-size: 14px;
+      z-index: 1;
+    }
+
+    #labelX {
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    #labelY {
+      top: 50%;
+      right: -90px;
+      transform: translateY(-50%);
+    }
+
+    .corner-label {
+      position: absolute;
       font-weight: bold;
       font-size: 14px;
       color: red;
+      background-color: #fff;
+      border: 1px solid red;
+      border-radius: 4px;
+      padding: 2px 6px;
+      z-index: 1;
     }
 
-    .dimension-labels {
-      font-size: 14px;
-      color: #007bff;
-      margin-top: 10px;
+    .corner-label.top-left {
+      top: -10px;
+      left: -10px;
     }
 
-    .tap-output {
-      margin-top: 10px;
-      font-size: 14px;
-      color: #444;
-      font-style: italic;
+    .corner-label.top-right {
+      top: -10px;
+      right: -10px;
     }
 
-    @media (max-width: 500px) {
-      body {
-        padding: 15px;
-      }
-
-      h2 {
-        font-size: 18px;
-      }
-
-      .result {
-        font-size: 15px;
-      }
-
-      .dimension-labels {
-        font-size: 13px;
-      }
+    .corner-label.bottom-right {
+      bottom: -10px;
+      right: -10px;
     }
   </style>
 </head>
 <body>
+  <div class="container" role="main">
+    <h2>OH (Ordinary Hazard) SPRINKLER SPACING (for NZS4541:2020 only)</h2>
+    <p><strong>OH coverage Area:</strong> 12 m²</p>
 
-  <h2>OH (Ordinary Hazard) SPRINKLER SPACING (for NZS4541:2020 only)</h2>
-  <p><strong>OH coverage Area:</strong> 12 m²</p>
+    <label for="xInput">Enter Distance between two(A to B) sprinklers (only 1.8m – 4.6m):</label>
+    <input type="number" id="xInput" aria-label="X input in meters" placeholder="Enter value in meter" step="any" min="1.8" max="4.8">
 
-  <label for="xInput">Enter Distance between two (A to B) sprinklers (only 1.8m – 4.6m):</label>
-  <input type="number" id="xInput" aria-label="X input in meters" placeholder="Enter value in meter" step="any" min="1.8" max="4.8">
+    <label for="wallInput">Max sprinkler distance allowed from the wall :</label>
+    <input type="number" id="wallInput" aria-label="Sprinkler from wall" readonly>
 
-  <label for="wallInput">Max sprinkler distance allowed from the wall:</label>
-  <input type="number" id="wallInput" aria-label="Sprinkler from wall" readonly>
+    <div class="result" id="yResult" aria-live="polite">Max space allowed on the other Spk = ?</div>
+    <div class="result" id="areaResult" aria-live="polite">Coverage = 12.00 m²</div>
+    <div class="warning" id="warningMsg" aria-live="assertive"></div>
 
-  <div class="result" id="yResult" aria-live="polite">Max space allowed on the other Spk = ?</div>
-  <div class="result" id="areaResult" aria-live="polite">Coverage = 12.00 m²</div>
-  <div class="warning" id="warningMsg" aria-live="assertive"></div>
-
-  <div class="visualization" aria-label="Box visualization of X by Y">
-    <div class="corner-labels">
-      <span>A</span>
-      <span>B</span>
+    <div class="visualization" aria-label="Box visualization of X by Y">
+      <div id="box" style="width:100px;height:100px;">
+        <span id="labelX"></span>
+        <span id="labelY"></span>
+        <div class="corner-label top-left">A</div>
+        <div class="corner-label top-right">B</div>
+        <div class="corner-label bottom-right">C</div>
+      </div>
     </div>
-
-    <div id="box" style="width:100px; height:100px;"></div>
-
-    <div class="corner-labels" style="justify-content: flex-end;">
-      <span>C</span>
-    </div>
-
-    <div class="dimension-labels">
-      <div id="labelX">Spk A to Spk B: -- m</div>
-      <div id="labelY">Max Spk B to C: -- m</div>
-    </div>
-
-    <div class="tap-output" id="tapOutput"></div>
   </div>
 
   <script>
@@ -137,16 +137,12 @@
     const box = document.getElementById("box");
     const labelX = document.getElementById("labelX");
     const labelY = document.getElementById("labelY");
-    const tapOutput = document.getElementById("tapOutput");
 
     const area = 12;
     const maxVal = 4.6;
     const wallLimit = 2.3;
     const scale = 50; // 1m = 50px
     const maxSizePx = 300;
-
-    let currentX = null;
-    let currentY = null;
 
     xInput.addEventListener("input", () => {
       let userX = parseFloat(xInput.value);
@@ -156,68 +152,59 @@
         let y = area / x;
         let halfY = y / 2;
 
-        currentX = userX;
-        currentY = y;
-
         wallInput.value = halfY.toFixed(2);
 
         if (halfY > wallLimit) {
           warningMsg.textContent = "⚠️ Y / 2 exceeds wall limit of 2.3 meters!";
-          yResult.textContent = `Y = --`;
-          areaResult.textContent = `Area = --`;
+          yResult.textContent = Y = --;
+          areaResult.textContent = Area = --;
           resetBox();
           return;
         }
 
         if (y > maxVal) {
           warningMsg.textContent = "⚠️ Y would exceed 4.6 meters! Choose a larger X.";
-          yResult.textContent = `Y = --`;
-          areaResult.textContent = `Area = --`;
+          yResult.textContent = Y = --;
+          areaResult.textContent = Area = --;
           resetBox();
           return;
         } else {
           warningMsg.textContent = "";
         }
 
-        yResult.textContent = `Max space allowed on the other Spk = ${y.toFixed(2)} meters`;
-        areaResult.textContent = `Max Coverage = ${x.toFixed(2)} × ${y.toFixed(2)} = 12.00 m²`;
+        yResult.textContent = Max space allowed on the other Spk = ${y.toFixed(2)} meters;
+        areaResult.textContent = Max Coverage = ${x.toFixed(2)} × ${y.toFixed(2)} = 12.00 m²;
 
         let width = x * scale;
         let height = y * scale;
         width = Math.min(width, maxSizePx);
         height = Math.min(height, maxSizePx);
 
-        box.style.width = `${width}px`;
-        box.style.height = `${height}px`;
+        box.style.width = ${width}px;
+        box.style.height = ${height}px;
 
-        labelX.textContent = `Spk A to Spk B: ${userX.toFixed(2)} m`;
-        labelY.textContent = `Max Spk B to C: ${y.toFixed(2)} m`;
+        labelX.textContent = Spk A to Spk B ${userX.toFixed(2)}m;
+        labelY.textContent = Max Spk B to Spk C allowed ${y.toFixed(2)}m;
+
+        labelX.style.display = width < 50 ? "none" : "block";
+        labelY.style.display = height < 50 ? "none" : "block";
       } else {
         wallInput.value = "";
         yResult.textContent = "Enter Distance between two sprinklers within 1.8m - 4.6m";
         areaResult.textContent = "Area = 12.00 m²";
         warningMsg.textContent = userX <= 0 ? "Please enter a value greater than 0." : "";
         resetBox();
-        currentX = null;
-        currentY = null;
       }
     });
 
     function resetBox() {
       box.style.width = "100px";
       box.style.height = "100px";
-      labelX.textContent = "Spk A to Spk B: -- m";
-      labelY.textContent = "Max Spk B to C: -- m";
+      labelX.textContent = "Spk to Spk";
+      labelY.textContent = "Spk to Spk";
+      labelX.style.display = "block";
+      labelY.style.display = "block";
     }
-
-    box.addEventListener("click", () => {
-      if (currentX && currentY) {
-        tapOutput.textContent = `🔍 You tapped the box. Current values → A-B: ${currentX.toFixed(2)}m, B-C: ${currentY.toFixed(2)}m`;
-      } else {
-        tapOutput.textContent = `Tap only works after you enter a valid A-B distance.`;
-      }
-    });
   </script>
 </body>
 </html>
-
