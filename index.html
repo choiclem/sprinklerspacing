@@ -80,7 +80,8 @@
       top: 50%;
       right: -90px;
       transform: translateY(-50%);
-      color: red; /* Make the box label red */
+      color: red; /* visualization box label in red */
+      font-weight: bold;
     }
 
     .corner-label {
@@ -150,7 +151,7 @@
     <label for="wallInput" class="red-text">Max sprinkler distance allowed from the wall:</label>
     <input type="number" id="wallInput" aria-label="Sprinkler from wall" readonly>
 
-    <div class="result red-text" id="yResult" aria-live="polite">Max space allowed on the other Spk = ?</div>
+    <div class="result" id="yResult" aria-live="polite">Max space allowed on the other Spk = ?</div>
     <div class="result" id="areaResult" aria-live="polite">Coverage = 12.00 m²</div>
     <div class="warning" id="warningMsg" aria-live="assertive"></div>
 
@@ -209,8 +210,8 @@
           warningMsg.textContent = "";
         }
 
-        yResult.textContent = `Max space allowed on the other Spk = ${y.toFixed(2)} meters`;
-        yResult.classList.add("red-text"); // ensure it's red dynamically
+        // Make the number red in the result line
+        yResult.innerHTML = `Max space allowed on the other Spk = <span class="red-text">${y.toFixed(2)}</span> meters`;
 
         areaResult.textContent = `Max Coverage = ${x.toFixed(2)} × ${y.toFixed(2)} = 12.00 m²`;
 
@@ -223,7 +224,9 @@
         box.style.height = `${height}px`;
 
         labelX.textContent = `Spk A to Spk B ${userX.toFixed(2)}m`;
-        labelY.textContent = `Max Spk B to Spk C allowed ${y.toFixed(2)}m`;
+
+        // Make the label Y fully red and bold
+        labelY.innerHTML = `<span class="red-text">Max Spk B to Spk C allowed ${y.toFixed(2)}m</span>`;
 
         labelX.style.display = width < 50 ? "none" : "block";
         labelY.style.display = height < 50 ? "none" : "block";
