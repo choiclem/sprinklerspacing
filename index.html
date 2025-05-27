@@ -1,250 +1,233 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>OH (Ordinary Hazard) SPRINKLER SPACING</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 40px;
-      background: #f0f0f0;
-      transform: scale(1.3);
-      transform-origin: top left;
-    }
+<meta charset="UTF-8" />
+<title>OH (Ordinary Hazard) SPRINKLER SPACING</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    padding: 40px;
+    background: #f0f0f0;
+    transform: scale(1.3);
+    transform-origin: top left;
+  }
 
-    .container {
-      max-width: 600px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
-    }
+  .container {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  }
 
-    input {
-      width: 95%;
-      padding: 14px;
-      margin: 14px 0;
-      font-size: 20px;
-    }
+  input {
+    width: 95%;
+    padding: 14px;
+    margin: 14px 0;
+    font-size: 20px;
+  }
 
-    .result {
-      font-size: 20px;
-      margin-bottom: 12px;
-      color: #333;
-    }
+  .result {
+    font-size: 20px;
+    margin-bottom: 12px;
+    color: #333;
+  }
 
-    .red-text {
-      color: red;
-      font-weight: bold;
-    }
+  .red-text {
+    color: red;
+    font-weight: bold;
+  }
 
-    .warning {
-      color: red;
-      font-size: 20px;
-      margin-top: -5px;
-      margin-bottom: 10px;
-    }
+  .warning {
+    color: red;
+    font-size: 20px;
+    margin-top: -5px;
+    margin-bottom: 10px;
+  }
 
-    .visualization {
-      margin-top: 50px;
-      text-align: center;
-    }
+  .visualization {
+    margin-top: 50px;
+    text-align: center;
+  }
 
-    #box {
-      display: inline-block;
-      border: 3px solid #007bff;
-      background-color: rgba(0, 123, 255, 0.1);
-      position: relative;
-      transition: all 0.3s ease;
-    }
+  #box {
+    display: inline-block;
+    border: 3px solid #007bff;
+    background-color: rgba(0, 123, 255, 0.1);
+    position: relative;
+    transition: all 0.3s ease;
+  }
 
-    #box span {
-      position: absolute;
-      color: #007bff;
-      font-weight: bold;
-      background: white;
-      padding: 2px 5px;
-      font-size: 16px;
-      z-index: 1;
-      white-space: nowrap;
-    }
+  #box span {
+    position: absolute;
+    color: #007bff;
+    font-weight: bold;
+    background: white;
+    padding: 2px 5px;
+    font-size: 16px;
+    z-index: 1;
+    white-space: nowrap;
+  }
 
-    #labelX {
-      top: -30px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
+  #labelX {
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 
-    #labelY {
-      top: 50%;
-      right: -90px;
-      transform: translateY(-50%);
-      color: red; /* Make the box label red */
-    }
+  #labelY {
+    top: 50%;
+    right: -90px;
+    transform: translateY(-50%);
+    color: red;
+  }
 
-    .corner-label {
-      position: absolute;
-      font-weight: bold;
-      font-size: 15px;
-      color: red;
-      background-color: #fff;
-      border: 1px solid red;
-      border-radius: 4px;
-      padding: 2px 6px;
-      z-index: 1;
-    }
+  .corner-label {
+    position: absolute;
+    font-weight: bold;
+    font-size: 15px;
+    color: red;
+    background-color: #fff;
+    border: 1px solid red;
+    border-radius: 4px;
+    padding: 2px 6px;
+    z-index: 1;
+  }
 
-    .corner-label.top-left {
-      top: -10px;
-      left: -10px;
-    }
+  .corner-label.top-left { top: -10px; left: -10px; }
+  .corner-label.top-right { top: -10px; right: -10px; }
+  .corner-label.bottom-right { bottom: -10px; right: -10px; }
 
-    .corner-label.top-right {
-      top: -10px;
-      right: -10px;
-    }
+  #viewCount {
+    margin-top: 40px;
+    font-size: 16px;
+    color: #555;
+    text-align: center;
+  }
 
-    .corner-label.bottom-right {
-      bottom: -10px;
-      right: -10px;
-    }
-
-    @media (max-width: 650px) {
-      body {
-        padding: 20px;
-      }
-
-      .container {
-        max-width: 100%;
-        padding: 15px;
-      }
-
-      input {
-        font-size: 20px;
-        padding: 14px;
-      }
-
-      .result {
-        font-size: 22px;
-      }
-
-      #box span {
-        font-size: 18px;
-      }
-
-      #box {
-        transform: scale(1.3); /* Bigger visualization on mobile */
-      }
-    }
-  </style>
+  @media (max-width: 650px) {
+    body { padding: 20px; }
+    .container { max-width: 100%; padding: 15px; }
+    input { font-size: 20px; padding: 14px; }
+    .result { font-size: 22px; }
+    #box span { font-size: 18px; }
+    #box { transform: scale(1.3); }
+  }
+</style>
 </head>
 <body>
-  <div class="container" role="main">
-    <h2>OH (Ordinary Hazard) SPRINKLER SPACING (for NZS4541:2020 only)</h2>
-    <p><strong>OH coverage Area:</strong> 12 m²</p>
+<div class="container" role="main">
+  <h2>OH (Ordinary Hazard) SPRINKLER SPACING (for NZS4541:2020 only)</h2>
+  <p><strong>OH coverage Area:</strong> 12 m²</p>
 
-    <label for="xInput">Enter Distance between two (A to B) sprinklers (1.8m – 4.6m):</label>
-    <input type="number" id="xInput" aria-label="X input in meters" placeholder="Enter value in meter" step="any" min="1.8" max="4.8">
+  <label for="xInput">Enter Distance between two (A to B) sprinklers (1.8m – 4.6m):</label>
+  <input type="number" id="xInput" aria-label="X input in meters" placeholder="Enter value in meter" step="any" min="1.8" max="4.8">
 
-    <label for="wallInput" class="red-text">Max sprinkler distance allowed from the wall:</label>
-    <input type="number" id="wallInput" aria-label="Sprinkler from wall" readonly>
+  <label for="wallInput" class="red-text">Max sprinkler distance allowed from the wall:</label>
+  <input type="number" id="wallInput" aria-label="Sprinkler from wall" readonly>
 
-    <div class="result red-text" id="yResult" aria-live="polite">Max space allowed on the other Spk = ?</div>
-    <div class="result" id="areaResult" aria-live="polite">Coverage = 12.00 m²</div>
-    <div class="warning" id="warningMsg" aria-live="assertive"></div>
+  <div class="result red-text" id="yResult" aria-live="polite">Max space allowed on the other Spk = ?</div>
+  <div class="result" id="areaResult" aria-live="polite">Coverage = 12.00 m²</div>
+  <div class="warning" id="warningMsg" aria-live="assertive"></div>
 
-    <div class="visualization" aria-label="Box visualization of X by Y">
-      <div id="box" style="width:100px;height:100px;">
-        <span id="labelX"></span>
-        <span id="labelY"></span>
-        <div class="corner-label top-left">A</div>
-        <div class="corner-label top-right">B</div>
-        <div class="corner-label bottom-right">C</div>
-      </div>
+  <div class="visualization" aria-label="Box visualization of X by Y">
+    <div id="box" style="width:100px;height:100px;">
+      <span id="labelX"></span>
+      <span id="labelY"></span>
+      <div class="corner-label top-left">A</div>
+      <div class="corner-label top-right">B</div>
+      <div class="corner-label bottom-right">C</div>
     </div>
   </div>
 
-  <script>
-    const xInput = document.getElementById("xInput");
-    const wallInput = document.getElementById("wallInput");
-    const yResult = document.getElementById("yResult");
-    const areaResult = document.getElementById("areaResult");
-    const warningMsg = document.getElementById("warningMsg");
-    const box = document.getElementById("box");
-    const labelX = document.getElementById("labelX");
-    const labelY = document.getElementById("labelY");
+  <div id="viewCount">Loading view count...</div>
+</div>
 
-    const area = 12;
-    const maxVal = 4.6;
-    const wallLimit = 2.3;
-    const scale = 50; // 1m = 50px
-    const maxSizePx = 300;
+<script>
+  const xInput = document.getElementById("xInput");
+  const wallInput = document.getElementById("wallInput");
+  const yResult = document.getElementById("yResult");
+  const areaResult = document.getElementById("areaResult");
+  const warningMsg = document.getElementById("warningMsg");
+  const box = document.getElementById("box");
+  const labelX = document.getElementById("labelX");
+  const labelY = document.getElementById("labelY");
+  const viewCountEl = document.getElementById("viewCount");
 
-    xInput.addEventListener("input", () => {
-      let userX = parseFloat(xInput.value);
+  const area = 12;
+  const maxVal = 4.6;
+  const wallLimit = 2.3;
+  const scale = 50;
+  const maxSizePx = 300;
 
-      if (!isNaN(userX) && userX >= 1.8 && userX <= maxVal) {
-        let x = (userX >= 1.8 && userX <= 2.6) ? 2.61 : userX;
-        let y = area / x;
-        let halfY = y / 2;
+  xInput.addEventListener("input", () => {
+    let userX = parseFloat(xInput.value);
 
-        wallInput.value = halfY.toFixed(2);
+    if (!isNaN(userX) && userX >= 1.8 && userX <= maxVal) {
+      let x = (userX >= 1.8 && userX <= 2.6) ? 2.61 : userX;
+      let y = area / x;
+      let halfY = y / 2;
 
-        if (halfY > wallLimit) {
-          warningMsg.textContent = "⚠️ Y / 2 exceeds wall limit of 2.3 meters!";
-          yResult.textContent = `Y = --`;
-          areaResult.textContent = `Area = --`;
-          resetBox();
-          return;
-        }
+      wallInput.value = halfY.toFixed(2);
 
-        if (y > maxVal) {
-          warningMsg.textContent = "⚠️ Y would exceed 4.6 meters! Choose a larger X.";
-          yResult.textContent = `Y = --`;
-          areaResult.textContent = `Area = --`;
-          resetBox();
-          return;
-        } else {
-          warningMsg.textContent = "";
-        }
-
-        yResult.textContent = `Max space allowed on the other Spk = ${y.toFixed(2)} meters`;
-        yResult.classList.add("red-text"); // ensure it's red dynamically
-
-        areaResult.textContent = `Max Coverage = ${x.toFixed(2)} × ${y.toFixed(2)} = 12.00 m²`;
-
-        let width = x * scale;
-        let height = y * scale;
-        width = Math.min(width, maxSizePx);
-        height = Math.min(height, maxSizePx);
-
-        box.style.width = `${width}px`;
-        box.style.height = `${height}px`;
-
-        labelX.textContent = `Spk A to Spk B ${userX.toFixed(2)}m`;
-        labelY.textContent = `Max Spk B to Spk C allowed ${y.toFixed(2)}m`;
-
-        labelX.style.display = width < 50 ? "none" : "block";
-        labelY.style.display = height < 50 ? "none" : "block";
-      } else {
-        wallInput.value = "";
-        yResult.textContent = "Enter Distance between two sprinklers within 1.8m - 4.6m";
-        areaResult.textContent = "Area = 12.00 m²";
-        warningMsg.textContent = userX <= 0 ? "Please enter a value greater than 0." : "";
+      if (halfY > wallLimit) {
+        warningMsg.textContent = "⚠️ Y / 2 exceeds wall limit of 2.3 meters!";
+        yResult.textContent = `Y = --`;
+        areaResult.textContent = `Area = --`;
         resetBox();
+        return;
       }
-    });
 
-    function resetBox() {
-      box.style.width = "100px";
-      box.style.height = "100px";
-      labelX.textContent = "Spk to Spk";
-      labelY.textContent = "Spk to Spk";
-      labelX.style.display = "block";
-      labelY.style.display = "block";
+      if (y > maxVal) {
+        warningMsg.textContent = "⚠️ Y would exceed 4.6 meters! Choose a larger X.";
+        yResult.textContent = `Y = --`;
+        areaResult.textContent = `Area = --`;
+        resetBox();
+        return;
+      } else {
+        warningMsg.textContent = "";
+      }
+
+      yResult.textContent = `Max space allowed on the other Spk = ${y.toFixed(2)} meters`;
+      areaResult.textContent = `Max Coverage = ${x.toFixed(2)} × ${y.toFixed(2)} = 12.00 m²`;
+
+      let width = x * scale;
+      let height = y * scale;
+      width = Math.min(width, maxSizePx);
+      height = Math.min(height, maxSizePx);
+
+      box.style.width = `${width}px`;
+      box.style.height = `${height}px`;
+
+      labelX.textContent = `Spk A to Spk B ${userX.toFixed(2)}m`;
+      labelY.textContent = `Max Spk B to Spk C allowed ${y.toFixed(2)}m`;
+
+      labelX.style.display = width < 50 ? "none" : "block";
+      labelY.style.display = height < 50 ? "none" : "block";
+    } else {
+      wallInput.value = "";
+      yResult.textContent = "Enter Distance between two sprinklers within 1.8m - 4.6m";
+      areaResult.textContent = "Area = 12.00 m²";
+      warningMsg.textContent = userX <= 0 ? "Please enter a value greater than 0." : "";
+      resetBox();
     }
-  </script>
+  });
+
+  function resetBox() {
+    box.style.width = "100px";
+    box.style.height = "100px";
+    labelX.textContent = "Spk to Spk";
+    labelY.textContent = "Spk to Spk";
+    labelX.style.display = "block";
+    labelY.style.display = "block";
+  }
+
+  // View count logic
+  let views = localStorage.getItem("viewCount");
+  views = views ? parseInt(views) + 1 : 1;
+  localStorage.setItem("viewCount", views);
+  viewCountEl.textContent = `👁️ View count: ${views}`;
+</script>
 </body>
 </html>
-
